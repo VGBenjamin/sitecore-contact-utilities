@@ -11,14 +11,26 @@ namespace Sitecore.Strategy.Contacts.DataProviders
 {
     public static class ContactFacetItemHelper
     {
-        private static IFacet GetFacet(Database database, ID contactFacetId)
+        private static string GetFacetName(Database database, ID contactFacetId)
         {
+            if (contactFacetId == default(ID))
+            {
+                return null;
+            }
+
             ContactFacetNameItem cfnItem = database.GetItem(contactFacetId);
             if (cfnItem == null)
             {
                 return null;
             }
-            var facetName = cfnItem.FacetName;
+            return cfnItem.FacetName;            
+        }
+
+        private static bool FacetExist(Database database, ID contactFacetId) => !string.IsNullOrEmpty(GetFacetName(database, contactFacetId));
+
+        private static IFacet GetFacet(Database database, ID contactFacetId)
+        {
+            var facetName = GetFacetName(database, contactFacetId);
             var contact = Sitecore.Analytics.Tracker.Current.Contact;
             if (contact == null)
             {
@@ -29,8 +41,7 @@ namespace Sitecore.Strategy.Contacts.DataProviders
         }
         private static MemberInfo GetFacetMember(Database database, ID contactFacetId, ID contactFacetMemberId)
         {
-            var facet = GetFacet(database, contactFacetId);
-            if (facet == null)
+            if (!FacetExist(database, contactFacetId))
             {
                 return null;
             }
@@ -98,5 +109,21 @@ namespace Sitecore.Strategy.Contacts.DataProviders
             }
             return null;
         }
+
+        public static string GetFacetMemberFullName(Database database, ID contactFacetId, ID contactFacetMemberId)
+        {
+            string facetName = GetFacetName(database, contactFacetId);
+            if (string.IsNullOrEmpty(facetName))
+            {
+                return null;
+            }
+            ContactFacetMemberItem cfmItem = database.GetItem(contactFacetMemberId);
+            if (cfmItem == null)
+            {
+                return null;
+            }
+            return $"contact.{facetName}.{cfmItem.MemberName}".ToLower();
+        }
+       
     }
 }

@@ -29,11 +29,15 @@ namespace Sitecore.Strategy.Contacts.Items
                 return item.ContractType;
             }
         }
+
+        public string MemberName
+            => this.InnerItem[Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberName];
+
         public MemberInfo Member
         {
             get
             {
-                var name = this.InnerItem[Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberName];
+                var name = MemberName;
                 if (string.IsNullOrEmpty(name))
                 {
                     return null;

@@ -2,8 +2,8 @@
   <Metadata>
     <metadata>
       <PackageName>Contact Rules</PackageName>
-      <Author>Adam Conn</Author>
-      <Version>1.0.1</Version>
+      <Author>Adam Conn &amp; Vangansewinkel Benjamin</Author>
+      <Version>1.1.0</Version>
       <Revision />
       <License />
       <Comment />
@@ -32,6 +32,7 @@ data under /sitecore/system/Settings/Rules/Definitions/Elements/Contacts
         <x-item>/master/sitecore/system/Settings/Rules/Definitions/Elements/Contacts/Tags/{EB69080C-714B-42E5-A4CF-BC593B60CDFA}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Settings/Rules/Definitions/Elements/Contacts/Tags/Default/{A144B566-F592-4D0E-B60E-D022A7F49E9A}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Settings/Rules/Definitions/Elements/Contacts/Visibility/{E9B8D576-30AD-42D7-AC07-D3CE8CFEA557}/invariant/0</x-item>
+        <x-item>/master/sitecore/system/Settings/Rules/Definitions/Elements/Segment Builder/Contact Facet Member Value/{687A96F5-E8B5-49C7-8692-7F6B0C8FA7C6}/invariant/0</x-item>
       </Entries>
       <SkipVersions>False</SkipVersions>
       <Converter>

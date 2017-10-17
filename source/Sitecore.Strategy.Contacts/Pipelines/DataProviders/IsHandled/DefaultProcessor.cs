@@ -9,7 +9,7 @@ using Sitecore.Strategy.Contacts.IdProvider;
 
 namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.IsHandled
 {
-    public class DefaultProcessor
+    public class DefaultProcessor 
     {
         protected static List<ID> AllHandledIds { get; private set; }
         protected static List<ID> FullyHandledIds { get; private set; }

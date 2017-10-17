@@ -10,6 +10,8 @@ using Sitecore.Pipelines;
 using Sitecore.Data;
 using Sitecore.Data.DataProviders;
 using System.Reflection;
+using System.Text;
+using Sitecore.Strategy.Contacts.IdProvider;
 
 namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
 {
@@ -22,7 +24,9 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             Assert.ArgumentNotNull(args.Context, "args.Context");
             //TODO: finish
             var ids = args.IDList;
+           
             var itemId = args.ItemDefinition.ID;
+            Log.Info($"[SD] GetChildIDs - DefaultProcessor - Process - Begin - itemId: {itemId}", this);
             if (itemId == Sitecore.Strategy.Contacts.DataProviders.ItemIDs.SettingsRoot)
             {
                 ids.Add(Sitecore.Strategy.Contacts.DataProviders.ItemIDs.ContactsFolder);
@@ -35,27 +39,35 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             {
                 AddChildIDsForContactFacetsRootItem(ids, args.ItemDefinition, args.Context);
             }
-            else if (IDTableHelper.IsFacetItem(itemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(itemId))
             {
                 AddChildIDsForContactFacetItem(ids, args.ItemDefinition, args.Context);
             }
-            else if (IDTableHelper.IsFacetMemberItem(itemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberItem(itemId))
             {
                 AddChildIDsForContactFacetMemberItem(ids, args.ItemDefinition, args.Context);
             }
+
+            StringBuilder sbLog = new StringBuilder();
+            foreach (ID id in ids)
+            {
+                sbLog.Append(id);
+                sbLog.Append("|");
+            }
+            Log.Info($"[SD] GetChildIDs - DefaultProcessor - Process - End - itemId: {itemId} - ids: {sbLog}", this);
         }
         protected virtual void AddChildIDsForContactFacetsRootItem(IDList ids, ItemDefinition itemDefinition, CallContext context)
         {
             var facetNames = ContactFacetHelper.GetFacetNames();
             foreach (var name in facetNames)
             {
-                var id = IDTableHelper.GenerateIdForFacet(name, itemDefinition.ID, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetTemplate);
+                var id = ContactFacetIdFactory.GetContactFacetIDProvider().GenerateIdForFacet(name, itemDefinition.ID, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetTemplate);
                 ids.Add(id);
             }
         }
         protected virtual void AddChildIDsForContactFacetItem(IDList ids, ItemDefinition itemDefinition, CallContext context)
         {
-            var facetName = IDTableHelper.GetFacetName(itemDefinition.ID);
+            var facetName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetName(itemDefinition.ID);
             var contractType = ContactFacetHelper.GetContractTypeForFacet(facetName);
             if (contractType == null)
             {
@@ -66,7 +78,7 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             {
                 if (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property)
                 {
-                    var id = IDTableHelper.GenerateIdForFacetMember(member, itemDefinition.ID, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberTemplate);
+                    var id = ContactFacetIdFactory.GetContactFacetIDProvider().GenerateIdForFacetMember(member, itemDefinition.ID, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberTemplate);
                     ids.Add(id);
                 }
             }
@@ -74,8 +86,8 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
         protected virtual void AddChildIDsForContactFacetMemberItem(IDList ids, ItemDefinition itemDefinition, CallContext context)
         {
             var itemId = itemDefinition.ID;
-            var facetName = IDTableHelper.GetFacetMemberFacetName(itemId);
-            var memberName = IDTableHelper.GetFacetMemberName(itemId);
+            var facetName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberFacetName(itemId);
+            var memberName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberName(itemId);
             var args = new GetFacetMemberValuesArgs(facetName, memberName);
             CorePipeline.Run("getFacetMemberValues", args);
             if (!args.Values.Any())
@@ -84,7 +96,7 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             }
             foreach (var pair in args.Values)
             {
-                var id = IDTableHelper.GenerateIdForFacetMemberValue(pair.Key, pair.Value, itemId, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberValueTemplate);
+                var id = ContactFacetIdFactory.GetContactFacetIDProvider().GenerateIdForFacetMemberValue(pair.Key, pair.Value, itemId, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberValueTemplate);
                 ids.Add(id);
             }
         }

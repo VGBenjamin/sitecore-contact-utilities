@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Sitecore.Strategy.Contacts.DataProviders;
+using Sitecore.Strategy.Contacts.IdProvider;
 
 namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetParentID
 {
@@ -22,23 +23,25 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetParentID
             Assert.ArgumentNotNull(args.Context, "args.Context");
 
             var itemId = args.ItemDefinition.ID;
+            Log.Info($"[SD] GetParentID - DefaultProcessor - Process - Begin - args.ItemId: {itemId}", this);
 
-            if (IDTableHelper.IsFacetItem(itemId))
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(itemId))
             {
-                args.ParentId = IDTableHelper.GetFacetParentId(itemId);
+                args.ParentId = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetParentId(itemId);
             }
-            else if (IDTableHelper.IsFacetMemberItem(itemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberItem(itemId))
             {
-                args.ParentId = IDTableHelper.GetFacetMemberParentId(itemId);
+                args.ParentId = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberParentId(itemId);
             }
-            else if (IDTableHelper.IsFacetMemberValueItem(itemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberValueItem(itemId))
             {
-                args.ParentId = IDTableHelper.GetFacetMemberValueParentId(itemId);
+                args.ParentId = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberValueParentId(itemId);
             }
             else
             {
                 base.Process(args);
             }
+            Log.Info($"[SD] GetParentID - DefaultProcessor - Process - End - args.ItemId: {itemId}", this);
         }
     }
 }

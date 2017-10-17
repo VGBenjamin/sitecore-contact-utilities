@@ -20,12 +20,14 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>..\..\..\..\Schmidt\Git\src\Dlw.ScBase.Website\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -72,10 +74,13 @@
   <ItemGroup>
     <Compile Include="DataProviders\ContactFacetDataProvider.cs" />
     <Compile Include="DataProviders\ContactFacetHelper.cs" />
+    <Compile Include="IdProvider\ContactFacetIdFactory.cs" />
+    <Compile Include="IdProvider\ContactFacetIDProvider.cs" />
     <Compile Include="DataProviders\ContactFacetItemHelper.cs" />
     <Compile Include="DataProviders\FieldIDs.cs" />
-    <Compile Include="DataProviders\IDTableHelper.cs" />
     <Compile Include="DataProviders\ItemIDs.cs" />
+    <Compile Include="IdProvider\IDTableContactFacetIDProvider.cs" />
+    <Compile Include="IdProvider\MemoryContactFacetIDProvider.cs" />
     <Compile Include="DataProviders\TemplateIDs.cs" />
     <Compile Include="Items\ContactFacetMemberItem.cs" />
     <Compile Include="Items\ContactFacetNameItem.cs" />

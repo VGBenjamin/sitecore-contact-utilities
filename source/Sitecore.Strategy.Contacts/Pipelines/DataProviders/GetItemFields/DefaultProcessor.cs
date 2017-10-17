@@ -10,6 +10,8 @@ using Sitecore.Pipelines;
 using Sitecore.Data;
 using Sitecore.Data.DataProviders;
 using System.Reflection;
+using System.Text;
+using Sitecore.Strategy.Contacts.IdProvider;
 
 namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
 {
@@ -22,13 +24,19 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
             Assert.ArgumentNotNull(args.Context, "args.Context");
 
             var itemId = args.ItemDefinition.ID;
+            
+            Log.Info($"[SD] GetItemFields - DefaultProcessor - Process - Begin - args.ItemId: {itemId}", this);
             var fields = new FieldList();
             var owner = typeof(ContactFacetDataProvider).Name;
-            fields.Add(Sitecore.FieldIDs.CreatedBy, owner);
+            fields.Add(Sitecore.FieldIDs.CreatedBy, owner); 
             fields.Add(Sitecore.FieldIDs.Owner, owner);
-            if (IDTableHelper.IsFacetItem(itemId))
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(itemId))
             {
-                var facetName = IDTableHelper.GetFacetName(itemId);
+                var facetName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetName(itemId);
+
+                Log.Info($"[SD] GetItemFields - IsFacetItem: {facetName}", this);
+
+
                 fields.Add(Sitecore.FieldIDs.DisplayName, facetName);
                 fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetName, facetName);
                 var contractType = ContactFacetHelper.GetContractTypeForFacet(facetName);
@@ -45,27 +53,29 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
                     }
                 }
             }
-            if (IDTableHelper.IsFacetMemberItem(itemId))
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberItem(itemId))
             {
-                var memberName = IDTableHelper.GetFacetMemberName(itemId);
+                var memberName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberName(itemId);
+                Log.Info($"[SD] GetItemFields - IsFacetMemberItem: {memberName}", this);
                 fields.Add(Sitecore.FieldIDs.DisplayName, memberName);
                 fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberName, memberName);
-                var facetId = IDTableHelper.GetFacetMemberParentId(itemId);
-                var facetName = IDTableHelper.GetFacetName(facetId);
+                var facetId = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberParentId(itemId);
+                var facetName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetName(facetId);
                 var memberType = ContactFacetHelper.GetFacetMemberType(facetName, memberName);
                 if (memberType != null)
                 {
                     fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberType, memberType.AssemblyQualifiedName);
                 }
             }
-            if (IDTableHelper.IsFacetMemberValueItem(itemId))
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberValueItem(itemId))
             {
-                var value = IDTableHelper.GetFacetMemberValue(itemId);
+                var value = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberValue(itemId);
+                Log.Info($"[SD] GetItemFields - IsFacetMemberValueItem: {value}", this);
                 if (!string.IsNullOrEmpty(value))
                 {
                     fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberValueValue, value);
                 }
-                var description = IDTableHelper.GetFacetMemberValueDescription(itemId);
+                var description = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberValueDescription(itemId);
                 if (!string.IsNullOrEmpty(description))
                 {
                     fields.Add(Sitecore.FieldIDs.DisplayName, description);
@@ -73,6 +83,16 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
                 }
             }
             args.FieldList = fields;
+
+
+            var sbLog = new StringBuilder();
+            sbLog.AppendLine("");
+            foreach (ID fieldId in fields.GetFieldIDs())
+            {
+                sbLog.AppendLine($"    - {fieldId} = {fields[fieldId]}");
+            }
+
+            Log.Info($"[SD] GetItemFields - DefaultProcessor - Process - End - args.ItemId: {itemId}. Fields: {sbLog}", this);
         }
     }
 }

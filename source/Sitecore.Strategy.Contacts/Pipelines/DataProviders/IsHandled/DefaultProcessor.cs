@@ -5,6 +5,7 @@ using Sitecore.Data;
 using Sitecore.Diagnostics;
 using Sitecore.Strategy.Contacts.DataProviders;
 using Sitecore.Rules;
+using Sitecore.Strategy.Contacts.IdProvider;
 
 namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.IsHandled
 {
@@ -33,10 +34,18 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.IsHandled
                 AllHandledIds.Add(RuleIds.MacrosesFolder);
             }
         }
+
+        private static bool rootIsLoaded = false;
+        private static object lockObject = new object();
+
         public virtual void Process(IsHandledArgs args)
         {
             Assert.ArgumentNotNull(args, "args");
             Assert.ArgumentNotNull(args.ItemId, "args.ItemId");
+
+            //Log.Info($"[SD] Is handled? {args.ItemId}", this);
+            Log.Info($"[SD] IsHandled - DefaultProcessor - Process - Begin - args.ItemId: {args.ItemId}", this);
+
             List<ID> ids = null;
             if (args.IncludeAllIds)
             {
@@ -56,29 +65,37 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.IsHandled
             var database = args.Context.DataManager.Database;
             if (database != null)
             {
-                var item = database.GetItem(Sitecore.Strategy.Contacts.DataProviders.ItemIDs.ContactsFolder);
-                if (item != null)
+                if (!rootIsLoaded)
                 {
-                    //item.GetChildren();
+                    lock (lockObject)
+                    {
+                        if (!rootIsLoaded)
+                        {
+                            database.GetItem(Sitecore.Strategy.Contacts.DataProviders.ItemIDs.ContactsFolder);
+                            //item.GetChildren();
+                            rootIsLoaded = true;
+                        }
+                    }
                 }
             }
-            //
-            //
-            if (IDTableHelper.IsFacetItem(args.ItemId))
+            
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(args.ItemId))
             {
                 args.IsHandled = true;
                 return;
             }
-            if (IDTableHelper.IsFacetMemberItem(args.ItemId))
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberItem(args.ItemId))
             {
                 args.IsHandled = true;
                 return;
             }
-            if (IDTableHelper.IsFacetMemberValueItem(args.ItemId))
+            if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberValueItem(args.ItemId))
             {
                 args.IsHandled = true;
                 return;
             }
+            Log.Info($"[SD] IsHandled - DefaultProcessor - Process - End - args.ItemId: {args.ItemId} IsHandled: {args.IsHandled}", this);
+
             //TODO: check dynamically generated item ids
         }
     }

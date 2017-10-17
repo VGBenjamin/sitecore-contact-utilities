@@ -7,6 +7,7 @@ using Sitecore.Data;
 using Sitecore.Strategy.Contacts.DataProviders;
 using Sitecore.Rules;
 using Sitecore.Data.Items;
+using Sitecore.Strategy.Contacts.IdProvider;
 
 namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemDefinition
 {
@@ -17,6 +18,9 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemDefinition
             Assert.ArgumentNotNull(args, "args");
             Assert.ArgumentNotNull(args.ItemId, "args.ItemId");
             Assert.ArgumentNotNull(args.Context, "args.Context");
+
+            Log.Info($"[SD] GetItemDefinition - DefaultProcessor - Process - Begin - args.ItemId: {args.ItemId}", this);
+
             //TODO: finish
             if (args.ItemId == Sitecore.Strategy.Contacts.DataProviders.ItemIDs.ContactsFolder)
             {
@@ -28,33 +32,34 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemDefinition
                 args.ItemDefinition = new ItemDefinition(args.ItemId, "Facets", Sitecore.TemplateIDs.Folder, ID.Null);
                 return;
             }
-            else if (IDTableHelper.IsFacetItem(args.ItemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(args.ItemId))
             {
-                var key = IDTableHelper.GetFacetName(args.ItemId);
+                var key = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetName(args.ItemId);
                 if (!string.IsNullOrEmpty(key))
                 {
                     args.ItemDefinition = new ItemDefinition(args.ItemId, ItemUtil.ProposeValidItemName(key), Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetTemplate, ID.Null);
                     return;
                 }
             }
-            else if (IDTableHelper.IsFacetMemberItem(args.ItemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberItem(args.ItemId))
             {
-                var key = IDTableHelper.GetFacetMemberName(args.ItemId);
+                var key = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberName(args.ItemId);
                 if (!string.IsNullOrEmpty(key))
                 {
                     args.ItemDefinition = new ItemDefinition(args.ItemId, ItemUtil.ProposeValidItemName(key), Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberTemplate, ID.Null);
                     return;
                 }
             }
-            else if (IDTableHelper.IsFacetMemberValueItem(args.ItemId))
+            else if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberValueItem(args.ItemId))
             {
-                var key = IDTableHelper.GetFacetMemberValue(args.ItemId);
+                var key = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberValue(args.ItemId);
                 if (!string.IsNullOrEmpty(key))
                 {
                     args.ItemDefinition = new ItemDefinition(args.ItemId, ItemUtil.ProposeValidItemName(key), Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberValueTemplate, ID.Null);
                     return;
                 }
             }
+            Log.Info($"[SD] GetItemDefinition - DefaultProcessor - Process - End - args.ItemId: {args.ItemId}", this);
         }
     }
 }

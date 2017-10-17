@@ -26,7 +26,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             var ids = args.IDList;
            
             var itemId = args.ItemDefinition.ID;
-            Log.Info($"[SD] GetChildIDs - DefaultProcessor - Process - Begin - itemId: {itemId}", this);
             if (itemId == Sitecore.Strategy.Contacts.DataProviders.ItemIDs.SettingsRoot)
             {
                 ids.Add(Sitecore.Strategy.Contacts.DataProviders.ItemIDs.ContactsFolder);
@@ -47,14 +46,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             {
                 AddChildIDsForContactFacetMemberItem(ids, args.ItemDefinition, args.Context);
             }
-
-            StringBuilder sbLog = new StringBuilder();
-            foreach (ID id in ids)
-            {
-                sbLog.Append(id);
-                sbLog.Append("|");
-            }
-            Log.Info($"[SD] GetChildIDs - DefaultProcessor - Process - End - itemId: {itemId} - ids: {sbLog}", this);
         }
         protected virtual void AddChildIDsForContactFacetsRootItem(IDList ids, ItemDefinition itemDefinition, CallContext context)
         {

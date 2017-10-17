@@ -23,7 +23,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetParentID
             Assert.ArgumentNotNull(args.Context, "args.Context");
 
             var itemId = args.ItemDefinition.ID;
-            Log.Info($"[SD] GetParentID - DefaultProcessor - Process - Begin - args.ItemId: {itemId}", this);
 
             if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(itemId))
             {
@@ -41,7 +40,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetParentID
             {
                 base.Process(args);
             }
-            Log.Info($"[SD] GetParentID - DefaultProcessor - Process - End - args.ItemId: {itemId}", this);
         }
     }
 }

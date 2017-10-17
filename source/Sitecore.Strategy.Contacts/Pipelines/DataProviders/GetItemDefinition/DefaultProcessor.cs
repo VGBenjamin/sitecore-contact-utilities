@@ -19,8 +19,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemDefinition
             Assert.ArgumentNotNull(args.ItemId, "args.ItemId");
             Assert.ArgumentNotNull(args.Context, "args.Context");
 
-            Log.Info($"[SD] GetItemDefinition - DefaultProcessor - Process - Begin - args.ItemId: {args.ItemId}", this);
-
             //TODO: finish
             if (args.ItemId == Sitecore.Strategy.Contacts.DataProviders.ItemIDs.ContactsFolder)
             {
@@ -59,7 +57,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemDefinition
                     return;
                 }
             }
-            Log.Info($"[SD] GetItemDefinition - DefaultProcessor - Process - End - args.ItemId: {args.ItemId}", this);
         }
     }
 }

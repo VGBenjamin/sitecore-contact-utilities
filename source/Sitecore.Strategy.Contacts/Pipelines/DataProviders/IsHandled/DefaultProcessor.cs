@@ -43,9 +43,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.IsHandled
             Assert.ArgumentNotNull(args, "args");
             Assert.ArgumentNotNull(args.ItemId, "args.ItemId");
 
-            //Log.Info($"[SD] Is handled? {args.ItemId}", this);
-            Log.Info($"[SD] IsHandled - DefaultProcessor - Process - Begin - args.ItemId: {args.ItemId}", this);
-
             List<ID> ids = null;
             if (args.IncludeAllIds)
             {
@@ -94,7 +91,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.IsHandled
                 args.IsHandled = true;
                 return;
             }
-            Log.Info($"[SD] IsHandled - DefaultProcessor - Process - End - args.ItemId: {args.ItemId} IsHandled: {args.IsHandled}", this);
 
             //TODO: check dynamically generated item ids
         }

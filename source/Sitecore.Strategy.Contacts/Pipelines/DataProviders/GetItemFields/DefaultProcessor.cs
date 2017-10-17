@@ -23,9 +23,7 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
             Assert.ArgumentNotNull(args.ItemDefinition, "args.ItemDefinition");
             Assert.ArgumentNotNull(args.Context, "args.Context");
 
-            var itemId = args.ItemDefinition.ID;
-            
-            Log.Info($"[SD] GetItemFields - DefaultProcessor - Process - Begin - args.ItemId: {itemId}", this);
+            var itemId = args.ItemDefinition.ID;           
             var fields = new FieldList();
             var owner = typeof(ContactFacetDataProvider).Name;
             fields.Add(Sitecore.FieldIDs.CreatedBy, owner); 
@@ -33,10 +31,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
             if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(itemId))
             {
                 var facetName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetName(itemId);
-
-                Log.Info($"[SD] GetItemFields - IsFacetItem: {facetName}", this);
-
-
                 fields.Add(Sitecore.FieldIDs.DisplayName, facetName);
                 fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetName, facetName);
                 var contractType = ContactFacetHelper.GetContractTypeForFacet(facetName);
@@ -56,7 +50,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
             if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberItem(itemId))
             {
                 var memberName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberName(itemId);
-                Log.Info($"[SD] GetItemFields - IsFacetMemberItem: {memberName}", this);
                 fields.Add(Sitecore.FieldIDs.DisplayName, memberName);
                 fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberName, memberName);
                 var facetId = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberParentId(itemId);
@@ -70,7 +63,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
             if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetMemberValueItem(itemId))
             {
                 var value = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetMemberValue(itemId);
-                Log.Info($"[SD] GetItemFields - IsFacetMemberValueItem: {value}", this);
                 if (!string.IsNullOrEmpty(value))
                 {
                     fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberValueValue, value);
@@ -83,16 +75,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
                 }
             }
             args.FieldList = fields;
-
-
-            var sbLog = new StringBuilder();
-            sbLog.AppendLine("");
-            foreach (ID fieldId in fields.GetFieldIDs())
-            {
-                sbLog.AppendLine($"    - {fieldId} = {fields[fieldId]}");
-            }
-
-            Log.Info($"[SD] GetItemFields - DefaultProcessor - Process - End - args.ItemId: {itemId}. Fields: {sbLog}", this);
         }
     }
 }

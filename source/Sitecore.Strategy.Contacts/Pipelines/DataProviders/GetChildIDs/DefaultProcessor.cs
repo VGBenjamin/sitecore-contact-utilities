@@ -18,8 +18,8 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
     public class DefaultProcessor
     {
         public virtual void Process(GetChildIDsArgs args)
-        {
-            Assert.ArgumentNotNull(args, "args");
+        {  
+            Assert.ArgumentNotNull(args, "args"); 
             Assert.ArgumentNotNull(args.ItemDefinition, "args.ItemDefinition");
             Assert.ArgumentNotNull(args.Context, "args.Context");
             //TODO: finish

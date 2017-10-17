@@ -140,7 +140,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
 
         public override string GetFacetMemberFacetName(ID itemId)
         {
-            return facetMemberValueDictionary.ContainsKey(itemId) ? facetMemberValueDictionary[itemId]?.Name : null;
+            return GetFacetName(GetFacetMemberParentId(itemId));            
         }
     }
 }

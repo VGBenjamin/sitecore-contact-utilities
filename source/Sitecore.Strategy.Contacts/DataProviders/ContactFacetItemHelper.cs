@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using Sitecore.Diagnostics;
 
 namespace Sitecore.Strategy.Contacts.DataProviders
 {
@@ -23,7 +24,7 @@ namespace Sitecore.Strategy.Contacts.DataProviders
             {
                 return null;
             }
-            return cfnItem.FacetName;            
+            return cfnItem.FacetName;
         }
 
         private static bool FacetExist(Database database, ID contactFacetId) => !string.IsNullOrEmpty(GetFacetName(database, contactFacetId));
@@ -45,13 +46,26 @@ namespace Sitecore.Strategy.Contacts.DataProviders
             {
                 return null;
             }
-            ContactFacetMemberItem cfmItem = database.GetItem(contactFacetMemberId);
-            if (cfmItem == null)
+            if (contactFacetMemberId == default(ID))
             {
+                Log.Error($"{nameof(ContactFacetItemHelper)} - {nameof(GetFacetMember)} - The contactFacetMemberId cannot be null. database: '{database?.Name}' contactFacetId: '{contactFacetId?.ToString()}'. Stack: {Environment.StackTrace}", typeof(ContactFacetItemHelper));
                 return null;
             }
-            var member = cfmItem.Member;
-            return member;
+            var item = database.GetItem(contactFacetMemberId);
+            if(item == null)
+            {
+                Log.Error($"{nameof(ContactFacetItemHelper)} - {nameof(GetFacetMember)} - Cannot retreive the item contactFacetMemberId: '{contactFacetMemberId}'. database: '{database?.Name}' contactFacetId: '{contactFacetId?.ToString()}'. Stack: {Environment.StackTrace}", typeof(ContactFacetItemHelper));
+                return null;
+            }
+
+            ContactFacetMemberItem cfmItem = item;
+            if(cfmItem == null)
+            {
+                Log.Error($"{nameof(ContactFacetItemHelper)} - {nameof(GetFacetMember)} - Cannot cast the item contactFacetMemberId: '{contactFacetMemberId}' to {nameof(ContactFacetMemberItem)}. database: '{database?.Name}' contactFacetId: '{contactFacetId?.ToString()}'. Stack: {Environment.StackTrace}", typeof(ContactFacetItemHelper));
+                return null;
+            }
+            return cfmItem?.Member;
+            
         }
         public static Type GetFacetMemberValueType(Database database, ID contactFacetId, ID contactFacetMemberId)
         {
@@ -124,6 +138,6 @@ namespace Sitecore.Strategy.Contacts.DataProviders
             }
             return $"contact.{facetName}.{cfmItem.MemberName}".ToLower();
         }
-       
+
     }
 }

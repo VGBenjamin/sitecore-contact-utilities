@@ -23,9 +23,30 @@ namespace Sitecore.Strategy.Contacts.Rules.Conditions
         public ID ContactFacetId { get; set; }
         public ID ContactFacetMemberId { get; set; }
 
-        public override object GetLeftValue(T ruleContext)
+        public override object GetLeftValue(T ruleContext) 
         {
-            var facetFullName = ContactFacetItemHelper.GetFacetMemberFullName(ruleContext.Item.Database, this.ContactFacetId, this.ContactFacetMemberId);
+            if (ruleContext == null)
+            {
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetLeftValue)} - ruleContext cannot be null. Stack: {Environment.StackTrace}", this);
+                return null;
+            }
+            Database db;
+            if (ruleContext.Item == null)
+            {
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetLeftValue)} - ruleContext.Item is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. Stack: {Environment.StackTrace}", this);
+                db = Sitecore.Context.ContentDatabase;
+            }
+            else if (ruleContext.Item.Database == null)
+            {
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetLeftValue)} - ruleContext.Item.Database is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. Stack: {Environment.StackTrace}", this);
+                db = Sitecore.Context.ContentDatabase;
+            }
+            else
+            {
+                db = ruleContext.Item.Database;
+            }
+
+            var facetFullName = ContactFacetItemHelper.GetFacetMemberFullName(db, this.ContactFacetId, this.ContactFacetMemberId);
             if (string.IsNullOrEmpty(facetFullName))
             {
                 return null;
@@ -41,14 +62,34 @@ namespace Sitecore.Strategy.Contacts.Rules.Conditions
             }
             var id = new ID(this.Value);
             var item = ruleContext.Item.Database.GetItem(id);
-            Assert.IsNotNull(item, string.Format("item {0} is used in a condition but cannot be located in the database", this.Value));
+            Assert.IsNotNull(item, string.Format("item {0} is used in a condition but cannot be located in the database. Stack: {Environment.StackTrace}", this.Value));
             var value = item[Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberValueValue];
             return value;
         }
 
         public override Type GetDataType(T ruleContext)
         {
-            var type = ContactFacetItemHelper.GetFacetMemberValueType(ruleContext.Item.Database, this.ContactFacetId, this.ContactFacetMemberId);
+            if (ruleContext == null)
+            {
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext cannot be null. Stack: {Environment.StackTrace}", this);
+                return null;
+            }
+            Database db;
+            if (ruleContext.Item == null)
+            {
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext.Item is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. Stack: {Environment.StackTrace}", this);
+                db = Sitecore.Context.ContentDatabase;
+            }
+            else if (ruleContext.Item.Database == null)
+            {
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext.Item.Database is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. Stack: {Environment.StackTrace}", this);
+                db = Sitecore.Context.ContentDatabase;
+            }
+            else
+            {
+                db = ruleContext.Item.Database;
+            }
+            var type = ContactFacetItemHelper.GetFacetMemberValueType(db, this.ContactFacetId, this.ContactFacetMemberId);
             return type;
         }
     }

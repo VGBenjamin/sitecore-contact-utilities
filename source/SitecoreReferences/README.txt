@@ -7,4 +7,4 @@ After updating the parameter, restart Visual Studio
 so that project references are reloaded.
 
 Note that .\Lib\Sitecore.Strategy.Adaptive.dll is an external reference from:
-    https://github.com/adamconn/sitecore-adaptive-rules
+    https://github.com/VGBenjamin/sitecore-adaptive-rules

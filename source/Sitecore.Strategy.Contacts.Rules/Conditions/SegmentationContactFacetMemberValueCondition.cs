@@ -62,7 +62,7 @@ namespace Sitecore.Strategy.Contacts.Rules.Conditions
             }
             var id = new ID(this.Value);
             var item = ruleContext.Item.Database.GetItem(id);
-            Assert.IsNotNull(item, string.Format("item {0} is used in a condition but cannot be located in the database. Stack: {Environment.StackTrace}", this.Value));
+            Assert.IsNotNull(item, $"item {this.Value} is used in a condition but cannot be located in the database. Stack: {Environment.StackTrace}");
             var value = item[Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetMemberValueValue];
             return value;
         }

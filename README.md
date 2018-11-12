@@ -1,5 +1,8 @@
+# Changes from the original version
+This module is a fork from [adamconn/sitecore-adaptive-rules](https://github.com/adamconn/sitecore-adaptive-rules). In the original version it is possible to use those rules to personalize content on the site but I have added the possibility to use it in the list manager to create the segmented lists of contacts.
+
 # sitecore-contact-utilities
-This module adds components that make it easier to work with contacts in Sitecore 8.0. 
+This module adds components that make it easier to work with contacts in Sitecore 8.X and 9.X
 
 You can [watch a video](https://www.youtube.com/watch?v=ajSZar5aShc) that shows what this module does.
 

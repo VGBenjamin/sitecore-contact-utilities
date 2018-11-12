@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Web;
 
 namespace Sitecore.Strategy.Contacts.Rules.Conditions
@@ -74,23 +75,53 @@ namespace Sitecore.Strategy.Contacts.Rules.Conditions
                 Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext cannot be null. Stack: {Environment.StackTrace}", this);
                 return null;
             }
-            Database db;
+            Database db;            
             if (ruleContext.Item == null)
             {
-                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext.Item is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. Stack: {Environment.StackTrace}", this);
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext.Item is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. {RulecontextToLog(ruleContext)}{Environment.NewLine}. Stack: {Environment.StackTrace}", this);
                 db = Sitecore.Context.ContentDatabase;
+                if (db == null)
+                {
+                    Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - (1) db is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. {RulecontextToLog(ruleContext)}{Environment.NewLine}.Stack: {Environment.StackTrace}", this);
+                }
             }
             else if (ruleContext.Item.Database == null)
             {
-                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext.Item.Database is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. Stack: {Environment.StackTrace}", this);
+                Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - ruleContext.Item.Database is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. {RulecontextToLog(ruleContext)}{Environment.NewLine}.Stack: {Environment.StackTrace}", this);
                 db = Sitecore.Context.ContentDatabase;
+                if (db == null)
+                {
+                    Log.Error($"SegmentationContactFacetMemberValueCondition<T> - {nameof(GetDataType)} - (2) db is null the database will be set to the ContentDatabase by default: '{Sitecore.Context.ContentDatabase}'. {RulecontextToLog(ruleContext)}{Environment.NewLine}.Stack: {Environment.StackTrace}", this);
+                }
             }
             else
             {
                 db = ruleContext.Item.Database;
             }
+            
             var type = ContactFacetItemHelper.GetFacetMemberValueType(db, this.ContactFacetId, this.ContactFacetMemberId);
             return type;
+        }
+
+        public string RulecontextToLog(T ruleContext)
+        {
+            var p = ruleContext?.Parameters;
+            var sb = new StringBuilder();
+
+            if (p == null)
+            {
+                sb.AppendLine("null");
+            }
+            else
+            {
+                foreach (var keyValuePair in p)
+                {
+                    sb.AppendLine($"  - '{keyValuePair.Key}'='{keyValuePair.Value}'");
+                }
+
+            }
+            return
+                $"Rulecontext: {Environment.NewLine}- Item ID: {ruleContext?.Item?.ID}{Environment.NewLine}- Item Lang: {ruleContext?.Item?.Language}{Environment.NewLine}- Parameters: {sb.ToString()}";
         }
     }
 }

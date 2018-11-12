@@ -69,36 +69,44 @@ namespace Sitecore.Strategy.Contacts.DataProviders
         }
         public static Type GetFacetMemberValueType(Database database, ID contactFacetId, ID contactFacetMemberId)
         {
-            var member = GetFacetMember(database, contactFacetId, contactFacetMemberId);
-            if (member == null)
+            try
             {
+                var member = GetFacetMember(database, contactFacetId, contactFacetMemberId);
+                if (member == null)
+                {
+                    return null;
+                }
+                if (member is PropertyInfo)
+                {
+                    var property = member as PropertyInfo;
+                    if (property != null)
+                    {
+                        return property.PropertyType;
+                    }
+                }
+                else if (member is FieldInfo)
+                {
+                    var field = member as FieldInfo;
+                    if (field != null)
+                    {
+                        return field.FieldType;
+                    }
+                }
+                else if (member is MethodInfo)
+                {
+                    var method = member as MethodInfo;
+                    if (method != null)
+                    { 
+                        return method.ReturnType;
+                    }
+                }
                 return null;
-            }
-            if (member is PropertyInfo)
+            }  
+            catch (Exception e)
             {
-                var property = member as PropertyInfo;
-                if (property != null)
-                {
-                    return property.PropertyType;
-                }
+                Log.Error($"Evaluation of condition failed. database: '{database}', contactFacetId: '{contactFacetId}', contactFacetMemberId: '{contactFacetMemberId}'", e, typeof(ContactFacetItemHelper));
+                throw;
             }
-            else if (member is FieldInfo)
-            {
-                var field = member as FieldInfo;
-                if (field != null)
-                {
-                    return field.FieldType;
-                }
-            }
-            else if (member is MethodInfo)
-            {
-                var method = member as MethodInfo;
-                if (method != null)
-                {
-                    return method.ReturnType;
-                }
-            }
-            return null;
         }
         public static object GetFacetMemberValue(Database database, ID contactFacetId, ID contactFacetMemberId)
         {

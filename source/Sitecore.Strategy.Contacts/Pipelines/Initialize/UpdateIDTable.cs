@@ -30,7 +30,7 @@ namespace Sitecore.Strategy.Contacts.Pipelines.Initialize
                 var facetId = ContactFacetIdFactory.GetContactFacetIDProvider().GenerateIdForFacet(name, parentId, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetTemplate);
                 AddContactFacetMember(name, facetId);
             }
-        }
+        5m}
         protected virtual void AddContactFacetMember(string facetName, ID parentId)
         {
             var contractType = ContactFacetHelper.GetContractTypeForFacet(facetName);
@@ -58,6 +58,8 @@ namespace Sitecore.Strategy.Contacts.Pipelines.Initialize
             }
             foreach (var pair in args.Values)
             {
+                Log.Info($"F(2): {facetName}.{memberName} - {pair.Key}:{pair.Value}", this);
+
                 ContactFacetIdFactory.GetContactFacetIDProvider().GenerateIdForFacetMemberValue(pair.Key, pair.Value, parentId, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberValueTemplate);
             }
         }

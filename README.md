@@ -19,4 +19,4 @@ This package installs a custom facet named ```Employee Data```. The facet has me
 This package installs a condition for the Sitecore Rules Engine that allows you to compare a value to the value of a contact facet member. This condition is exposed under ```/sitecore/system/Settings/Rules/Definitions/Elements/Contacts```.
 
 ## Download
-The installation packages are available [here](https://github.com/adamconn/sitecore-contact-utilities/tree/master/sitecore/).
+The installation packages are available [here](https://github.com/vgbenjamin/sitecore-contact-utilities/tree/master/sitecore/).

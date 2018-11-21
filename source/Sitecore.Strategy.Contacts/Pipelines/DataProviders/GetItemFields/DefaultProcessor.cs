@@ -30,6 +30,7 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetItemFields
             fields.Add(Sitecore.FieldIDs.Owner, owner);
             if (ContactFacetIdFactory.GetContactFacetIDProvider().IsFacetItem(itemId))
             {
+
                 var facetName = ContactFacetIdFactory.GetContactFacetIDProvider().GetFacetName(itemId);
                 fields.Add(Sitecore.FieldIDs.DisplayName, facetName);
                 fields.Add(Sitecore.Strategy.Contacts.DataProviders.FieldIDs.ContactFacetName, facetName);

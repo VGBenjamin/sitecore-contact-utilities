@@ -46,7 +46,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
 
         public override ID GenerateIdForFacet(string facetName, ID parentId, ID templateId)
         {
-            var id = GenerateIdForValue("facet", facetName);
+            var id = GenerateIdForValue("facet", facetName, parentId, templateId);
             var value = new FacetEntry
             {
                 Name = facetName,
@@ -64,7 +64,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
 
         public override ID GenerateIdForFacetMember(MemberInfo memberInfo, ID parentId, ID templateId)
         {
-            var id = GenerateIdForValue("facet-member", memberInfo.Name);
+            var id = GenerateIdForValue("facet-member", memberInfo.Name, parentId, templateId);
             var value = new FacetMemberEntry() { Name = memberInfo.Name, ParentID = parentId, TemplateID = templateId };
 
             if (facetMemberDictionary.ContainsKey(id))
@@ -77,7 +77,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
 
         public override ID GenerateIdForFacetMemberValue(string memberValue, string memberDescription, ID parentId, ID templateId)
         {
-            var id = GenerateIdForValue("facet-member-value", memberValue);
+            var id = GenerateIdForValue("facet-member-value", memberValue, parentId, templateId);
             var value = new FacetValueEntry
             { 
                 Name = memberDescription,

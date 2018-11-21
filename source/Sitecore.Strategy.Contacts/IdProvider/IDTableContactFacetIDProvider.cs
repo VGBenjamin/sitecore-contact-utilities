@@ -85,7 +85,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
         public override ID GenerateIdForFacet(string facetName, ID parentId, ID templateId)
         {
             var prefix = "facet";
-            var id = GenerateIdForValue(prefix, facetName);
+            var id = GenerateIdForValue(prefix, facetName, parentId, templateId);
             var customData = string.Format("templateId={0}", templateId.ToString());
             UpdateOrCreateIDTableEntry(prefix, facetName, id, parentId, customData);
             return id;
@@ -94,7 +94,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
         public override ID GenerateIdForFacetMember(MemberInfo memberInfo, ID parentId, ID templateId)
         {
             var prefix = "facet-member";
-            var id = GenerateIdForValue(prefix, string.Format("{0}-{1}", memberInfo.Name, parentId.ToString()));
+            var id = GenerateIdForValue(prefix, memberInfo.Name, parentId, templateId);
             var customData = string.Format("templateId={0}", templateId.ToString());
             UpdateOrCreateIDTableEntry(prefix, memberInfo.Name, id, parentId, customData);
             return id;
@@ -103,7 +103,7 @@ namespace Sitecore.Strategy.Contacts.IdProvider
         public override ID GenerateIdForFacetMemberValue(string memberValue, string memberDescription, ID parentId, ID templateId)
         {
             var prefix = "facet-member-value";
-            var id = GenerateIdForValue(prefix, memberValue);
+            var id = GenerateIdForValue(prefix, memberValue, parentId, templateId);
             var customData = string.Format("templateId={0}|description={1}", templateId.ToString(), memberDescription);
             UpdateOrCreateIDTableEntry(prefix, memberValue, id, parentId, customData);
             return id;

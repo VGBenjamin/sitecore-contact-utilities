@@ -9,13 +9,13 @@ namespace Sitecore.Strategy.Contacts.IdProvider
 {
     public abstract class ContactFacetIDProvider
     {
-        protected ID GenerateIdForValue(string prefix, string value)
+        protected ID GenerateIdForValue(string prefix, string value, ID parentId, ID templateId)
         {
             if (string.IsNullOrEmpty(prefix) || string.IsNullOrEmpty(value))
             {
                 return null;
             }
-            var input = string.Format("{0}-{1}", prefix, value);
+            var input = $"{prefix}-{value}-{parentId}-{templateId}";
             using (var md5 = MD5.Create())
             {
                 var hash = md5.ComputeHash(Encoding.Default.GetBytes(input));

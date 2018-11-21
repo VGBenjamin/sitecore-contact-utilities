@@ -87,7 +87,6 @@ namespace Sitecore.Strategy.Contacts.Pipelines.DataProviders.GetChildIDs
             }
             foreach (var pair in args.Values)
             {
-                Log.Info($"F: {facetName}.{memberName} - {pair.Key}:{pair.Value}", this);
 
                 var id = ContactFacetIdFactory.GetContactFacetIDProvider().GenerateIdForFacetMemberValue(pair.Key, pair.Value, itemId, Sitecore.Strategy.Contacts.DataProviders.TemplateIDs.ContactFacetMemberValueTemplate);
                 ids.Add(id);
